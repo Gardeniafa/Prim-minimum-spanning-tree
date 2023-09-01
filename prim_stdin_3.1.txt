@@ -1,0 +1,13 @@
+11
+ab 18
+af 19
+ag 18
+bc 8
+bg 20
+cd 20
+de 9
+df 16
+dg 15
+ef 3
+fg 15
+c
