@@ -6,13 +6,18 @@ typedef struct{
     int length;
 }charList;
 typedef struct{
-    char *border;
+    char* border;
     int weight;
 }weightGraphBorder;
+typedef struct{
+    weightGraphBorder* borders;
+    int num;
+}graphBorders;
 typedef enum {false, true} boolean;
 charList* appendCharArray(char, charList*);
 boolean charInCharList(char, charList*);
 charList* replaceCharInList(char, char, charList*);
+void printMatrix(charList*, graphBorders*);
 int main(){
     int numOfBorder;
     printf("输入带权值边的数量：");
@@ -44,6 +49,16 @@ int main(){
         sss[i] = points.arr[i];
     }
     pointsAll.arr = sss;
+    for(int i = 0; i < numOfBorder; i += 1){
+        for (int j = i; j < numOfBorder; j += 1) {
+            if(graph[i].weight > graph[j].weight){
+                weightGraphBorder cache;
+                cache = graph[i];
+                graph[i] = graph[j];
+                graph[j] = cache;
+            }
+        }
+    }
     charList newPoints;
     char* ssss = (char*) malloc(sizeof(char)*points.length);
     newPoints.arr = ssss;
@@ -55,17 +70,21 @@ int main(){
     scanf("%c", &startPoint);
     newPoints = *appendCharArray(startPoint, &newPoints);
     points = *replaceCharInList(startPoint, '\0', &points);
+    graphBorders AllBorders;
+    AllBorders.borders=graph;
+    AllBorders.num = numOfBorder;
+    printMatrix(&pointsAll, &AllBorders);
+    int weightSum = 0;
     while (borderLinked<pointsAll.length-1){
         weightGraphBorder shortest;
         shortest.weight = inf;
         for(int i = 0; i < numOfBorder; i += 1){
             if(((charInCharList(graph[i].border[0], &newPoints) && charInCharList(graph[i].border[1], &points))||
-            (charInCharList(graph[i].border[1], &newPoints) && charInCharList(graph[i].border[0], &points)))
-            &&(graph[i].weight < shortest.weight)){
+                (charInCharList(graph[i].border[1], &newPoints) && charInCharList(graph[i].border[0], &points)))
+               &&(graph[i].weight < shortest.weight)){
                 shortest.border=graph[i].border;
                 shortest.weight=graph[i].weight;
-            } else{
-                continue;
+                // graph[i].weight = inf;
             }
         }
         if(charInCharList(shortest.border[0], &newPoints)){
@@ -78,9 +97,9 @@ int main(){
             printf("\n第%d条路径：%c-->%c  %d", borderLinked+1, shortest.border[1], shortest.border[0], shortest.weight);
         }
         borderLinked += 1;
-
+        weightSum += shortest.weight;
     }
-    printf("\ndone");
+    printf("\n最小生成树权值和：%d\nAll done!", weightSum);
     return 0;
 }
 charList* appendCharArray(char c, charList* arr){
@@ -118,3 +137,28 @@ charList* replaceCharInList(char before, char after, charList* sA){
     p->arr=sB;
     return p;
 }
+void printMatrix(charList* points, graphBorders* borders){
+    printf("\n邻接矩阵：");
+    printf("\n\t");
+    for (int i = 0; i < points->length; i += 1) {
+        printf("\t%c", points->arr[i]);
+    }
+    for (int i = 0; i < points->length; i += 1){
+        printf("\n\t%c", points->arr[i]);
+        for (int j = 0; j < points->length; j += 1){
+            boolean flag = true;
+            for (int k = 0; k < borders->num; k += 1){
+                if ((borders->borders[k].border[0] == points->arr[i] && borders->borders[k].border[1] == points->arr[j])||
+                    borders->borders[k].border[1] == points->arr[i] && borders->borders[k].border[0] == points->arr[j]){
+                    printf("\t%d", borders->borders[k].weight);
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag){
+                printf("\t-");
+            }
+        }
+    }
+}
+
