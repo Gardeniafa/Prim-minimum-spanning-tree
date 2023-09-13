@@ -42,3 +42,8 @@ prim-stdin.xx.txt ---> 输入用例
 
 ![image](https://github.com/swRainy/Prim-minimum-spanning-tree/assets/127291502/9081ccb6-89ee-42dc-a701-c858c32de011)
 
+
+<hr>
+
+update: 增加了邻接矩阵输出功能
+![image](https://github.com/swRainy/Prim-minimum-spanning-tree/assets/127291502/0bd14b3e-3e7a-45c8-9a82-877c516595e9)
